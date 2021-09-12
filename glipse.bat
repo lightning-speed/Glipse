@@ -1,0 +1,1 @@
+java\jre\bin\javaw.exe -classpath "glipse.jar;flatlaf.jar" glipse.ide.Main
