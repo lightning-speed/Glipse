@@ -35,7 +35,7 @@ public class ExportWindow {
 		frmExport.setIconImage(Toolkit.getDefaultToolkit().getImage("icons\\icon.png"));
 		frmExport.setResizable(false);
 		frmExport.setTitle("Export");
-		frmExport.setSize(450, 154);
+		frmExport.setSize(450, 131);
 		frmExport.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frmExport.setVisible(true);
 		frmExport.setLocationRelativeTo(null);
@@ -70,12 +70,12 @@ public class ExportWindow {
 		});
 		btnExport.setForeground(Color.BLACK);
 		btnExport.setBackground(Color.LIGHT_GRAY);
-		btnExport.setBounds(10, 80, 89, 23);
+		btnExport.setBounds(10, 66, 89, 23);
 		panel.add(btnExport);
 		
 		error = new JLabel("");
 		error.setForeground(Color.RED);
-		error.setBounds(128, 80, 250, 23);
+		error.setBounds(128, 67, 250, 23);
 		panel.add(error);
 	}
 }

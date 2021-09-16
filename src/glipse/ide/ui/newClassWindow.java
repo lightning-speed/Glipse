@@ -35,7 +35,7 @@ public class newClassWindow {
 		frmNewClass.setTitle("New Class");
 		frmNewClass.setResizable(false);
 		frmNewClass.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		frmNewClass.setSize(438,141);
+		frmNewClass.setSize(438,123);
 		frmNewClass.setLocationRelativeTo(null);
 		JPanel panel = new JPanel();
 		frmNewClass.getContentPane().add(panel, BorderLayout.CENTER);
@@ -70,10 +70,10 @@ public class newClassWindow {
 		});
 		btnNewButton.setBackground(Color.LIGHT_GRAY);
 		btnNewButton.setForeground(Color.BLACK);
-		btnNewButton.setBounds(10, 79, 89, 23);
+		btnNewButton.setBounds(10, 61, 89, 23);
 		panel.add(btnNewButton);	
 		error.setForeground(Color.RED);
-		error.setBounds(132, 79, 250, 23);
+		error.setBounds(126, 59, 250, 23);
 		panel.add(error);
 	}
 }

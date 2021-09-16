@@ -32,6 +32,5 @@ public class launcher {
  }
  public static void openDir() {
 	 files = FileManager.read(dirPath+"/proj").split(";");
-	 
  }
 }

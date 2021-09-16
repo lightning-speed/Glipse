@@ -70,11 +70,11 @@ public class newProjectWindow {
 		});
 		btnNewButton.setBackground(Color.LIGHT_GRAY);
 		btnNewButton.setForeground(Color.BLACK);
-		btnNewButton.setBounds(10, 79, 89, 23);
+		btnNewButton.setBounds(10, 68, 89, 23);
 		panel.add(btnNewButton);
 		
 		error.setForeground(Color.RED);
-		error.setBounds(127, 79, 250, 23);
+		error.setBounds(126, 68, 250, 23);
 		panel.add(error);
 		frmNewClass.repaint();
 	}
