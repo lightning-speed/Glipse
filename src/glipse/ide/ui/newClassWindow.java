@@ -77,5 +77,7 @@ public class newClassWindow {
 		error.setForeground(Color.RED);
 		error.setBounds(126, 59, 250, 23);
 		panel.add(error);
+		frmNewClass.setSize(457,124);
+		frmNewClass.setSize(457,123);
 	}
 }

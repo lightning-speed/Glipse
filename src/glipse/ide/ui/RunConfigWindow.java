@@ -64,6 +64,7 @@ public class RunConfigWindow {
 		});
 		btnNewButton.setBounds(383, 53, 89, 23);
 		panel.add(btnNewButton);
-		frame.repaint();
+		frame.setSize(499,127);
+		frame.setSize(499,126);
 	}
 }

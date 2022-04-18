@@ -78,6 +78,8 @@ public class newProjectWindow {
 		error.setForeground(Color.RED);
 		error.setBounds(126, 68, 250, 23);
 		panel.add(error);
-		frame.repaint();
+		frame.setSize(469,142);
+		frame.setSize(469,141);
+
 	}
 }

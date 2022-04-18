@@ -35,6 +35,8 @@ public class EditorPane {
         style1 = pane.addStyle("", null);
         StyleConstants.setForeground(style1, Color.blue);
         StyleConstants.setBackground(style1, Color.white);
+        StyleConstants.setBold(style1,true);
+        StyleConstants.setItalic(style1,true);
         style2 = pane.addStyle("", null);
         StyleConstants.setForeground(style2, Color.black);
         StyleConstants.setBackground(style2, Color.white);
@@ -177,8 +179,9 @@ public class EditorPane {
         return Tab;
     }
 
-    public void save() {
+    public void save()  { try {
         FileManager.write(fileName, pane.getText());
+    }catch (Exception e){}
     }
 
     public void undo() {
@@ -202,20 +205,18 @@ public class EditorPane {
         int start = 0;
         for (int i = 0; i < t.length(); i++) {
             try {
-                if (t.charAt(i) == ' ' || t.charAt(i) == '\t') {
+                if (t.charAt(i) == ' ' || t.charAt(i) == '\t'||t.charAt(i ) == '.'||t.charAt(i)=='('||t.charAt(i)==')') {
 
                     start = i + 1;
 
-                } else if (i==t.length()-2||t.charAt(i + 1) == ' ' || t.charAt(i + 1) == '\t') {
+                } else if (i == t.length() - 2 || t.charAt(i + 1) == ' ' || t.charAt(i + 1) == '\t'||t.charAt(i + 1) == '.'||t.charAt(i+1)=='('||t.charAt(i+1)==')') {
                     doc.remove(start, i + 1 - start);
-                    if (t.substring(start, i + 1).equals("public")||t.substring(start, i + 1).equals("void")||t.substring(start, i + 1).equals("class")||
-                            t.substring(start, i + 1).equals("private")||t.substring(start, i + 1).equals("protected")||t.substring(start, i + 1).equals("static")) {
+                    if (t.substring(start, i + 1).matches("(\\W)*(public|private|protected|void|static|System|String|int|char|double|float|byte|return|short|new|true|false|class|null)")) {
                         try {
                             doc.insertString(start, t.substring(start, i + 1), style1);
                         } catch (BadLocationException e) {
                         }
-                    }
-                    else{
+                    } else {
                         try {
                             doc.insertString(start, t.substring(start, i + 1), style2);
                         } catch (BadLocationException e) {

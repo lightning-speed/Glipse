@@ -16,8 +16,12 @@ public class MainView extends JPanel{
 	GroupLayout groupLayout = new GroupLayout(this);
 	try {
 	for(int i = 0;i<launcher.files.length;i++) {
-		if(launcher.files[i].length()>0)
-		tabbedPane.addTab(new File(launcher.files[i]).getName(),new EditorPane(launcher.files[i].replace("\n", "")).getTab());
+		if(launcher.files[i].length()>0) {
+			EditorPane pane = new EditorPane(launcher.files[i].replace("\n", ""));
+			tabbedPane.addTab(new File(launcher.files[i]).getName(), pane.getTab());
+			pane.update();
+		}
+
 	}
 	if(launcher.files[0]==""||launcher.files[0]==null) {
 	label = new JLabel("No Class to diplay, Create a new Class from the File Menu");
