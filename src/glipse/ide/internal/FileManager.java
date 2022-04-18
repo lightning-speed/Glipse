@@ -30,8 +30,13 @@ public class FileManager {
         String out = "";
         try {
             String temp = null;
-            BufferedReader bf = new BufferedReader(new FileReader(path));
+			FileReader reader = new FileReader(path);
+            BufferedReader bf = new BufferedReader(reader);
             while((temp = bf.readLine())!=null){out+=temp+'\n';}
+            bf.close();
+            bf = null;
+            reader.close();
+            reader = null;
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {

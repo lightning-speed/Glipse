@@ -21,12 +21,12 @@ public class EditorPane {
     public JScrollPane Tab;
     public JTextPane pane;
     public String fileName = "";
-    public String[] texts = new String[10000];
-    public StyledDocument doc;
-    public Style style1;
-    public Style style2;
+    private String[] texts = new String[10000];
+    private StyledDocument doc;
+    private Style style1;
+    private Style style2;
+    private Thread updateThread;
     int index = 0;
-
     public EditorPane(String fn) {
         this.fileName = fn;
         pane = new JTextPane();
@@ -55,10 +55,12 @@ public class EditorPane {
                 if (e.getKeyCode() == KeyEvent.VK_Z && (e.getModifiers() & KeyEvent.CTRL_MASK) != 0) {
                     undo();
                     undo();
+                    update();
                 }
                 if (e.getKeyCode() == KeyEvent.VK_Y && (e.getModifiers() & KeyEvent.CTRL_MASK) != 0) {
                     redo();
                     undo();
+                    update();
                 }
             }
 
@@ -120,6 +122,7 @@ public class EditorPane {
             public void actionPerformed(ActionEvent arg0) {
                 undo();
                 undo();
+                update();
             }
         });
         toolBar.add(undo_btn);
@@ -130,6 +133,7 @@ public class EditorPane {
             public void actionPerformed(ActionEvent e) {
                 redo();
                 redo();
+                update();
             }
         });
         toolBar.add(redo_btn);
@@ -141,6 +145,8 @@ public class EditorPane {
                 int result = JOptionPane.showConfirmDialog(launcher.win, "Are you sure you want to delete this Class?",
                         "Delete", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
                 if (result == JOptionPane.YES_OPTION) {
+                    updateThread.suspend();
+                    System.out.println(fileName);
                     new File(fileName).delete();
                     if (StringUtil.exists(FileManager.read(launcher.dirPath + "/proj"), ";" + fileName))
                         FileManager.write(launcher.dirPath + "/proj",
@@ -149,16 +155,23 @@ public class EditorPane {
                         FileManager.write(launcher.dirPath + "/proj",
                                 FileManager.read(launcher.dirPath + "/proj").replace(fileName + "\n", ""));
                     MainView.tabbedPane.remove(getTab());
+                    if (launcher.files[0] == "" || launcher.files[0] == null) {
+                        MainView.label = new JLabel("No Class to diplay, Create a new Class from the File Menu");
+                        MainView.label.setHorizontalAlignment(SwingConstants.CENTER);
+                        MainView.tabbedPane.addTab("Welcome", MainView.label);
+                    }
                 }
             }
         });
         toolBar.add(del_btn);
-        new Thread(new Runnable() {
+       updateThread =  new Thread(new Runnable() {
 
             @Override
             public void run() {
                 for (; ; ) {
                     try {
+
+
                         Thread.sleep(2500);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -171,8 +184,9 @@ public class EditorPane {
                 }
 
             }
-        }).start();
-
+        });
+       updateThread.start();
+        update();
     }
 
     public JScrollPane getTab() {
@@ -199,7 +213,7 @@ public class EditorPane {
     }
 
     public void update() {
-        System.out.println("ab");
+
         String t = pane.getText();
         int cp = pane.getCaretPosition();
         int start = 0;
@@ -211,7 +225,7 @@ public class EditorPane {
 
                 } else if (i == t.length() - 2 || t.charAt(i + 1) == ' ' || t.charAt(i + 1) == '\t'||t.charAt(i + 1) == '.'||t.charAt(i+1)=='('||t.charAt(i+1)==')') {
                     doc.remove(start, i + 1 - start);
-                    if (t.substring(start, i + 1).matches("(\\W)*(public|private|protected|void|static|System|String|int|char|double|float|byte|return|short|new|true|false|class|null)")) {
+                    if (t.substring(start, i + 1).matches("(\\W)*(public|private|protected|void|static|System|String|int|char|double|float|byte|long|return|short|new|true|false|class|null)")) {
                         try {
                             doc.insertString(start, t.substring(start, i + 1), style1);
                         } catch (BadLocationException e) {
