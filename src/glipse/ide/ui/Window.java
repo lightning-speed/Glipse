@@ -1,6 +1,5 @@
 package glipse.ide.ui;
 
-
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
@@ -24,85 +23,86 @@ import java.awt.event.InputEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class Window extends JFrame{
- public MainView main_view = new MainView(); 
- public Window() {
-	 this.setIconImage(new ImageIcon("icons/icon.png").getImage());
-	 this.setTitle("Glipse - ["+ new File(launcher.dirPath).getName()+"]");
-	this.setVisible(true);
-	this.setSize(800,600);
-	this.setLocationRelativeTo(null);
-	this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-	JMenuBar menuBar = new JMenuBar();
-	menuBar.setBackground(new Color(235,235,240));
-	setJMenuBar(menuBar);
-	
-	JMenu file_menu = new JMenu("File");
-	menuBar.add(file_menu);
-	
-	JMenuItem mntmNewProject = new JMenuItem("New Project");
-	mntmNewProject.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			new newProjectWindow();
-		}
-	});
-	file_menu.add(mntmNewProject);
-	
-	JMenuItem mntmOpenProject = new JMenuItem("Open Project");
-	mntmOpenProject.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			String path = new FC().chooseFolder();
-			if(path!="")
-			Core.openProject(path);
-		}
-	});
-	file_menu.add(mntmOpenProject);
-	
-	JMenuItem mntmNewClass = new JMenuItem("New Class");
-	mntmNewClass.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			new newClassWindow();
-		}
-	});
-	file_menu.add(mntmNewClass);
-	
-	JMenuItem mntmExportJar = new JMenuItem("Export Jar");
-	mntmExportJar.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent arg0) {
-			new ExportWindow();
-		}
-	});
-	file_menu.add(mntmExportJar);
-	
-	JMenu mnRun = new JMenu("Run");
-	menuBar.add(mnRun);
-	
-	JMenuItem mntmRunConfigrations = new JMenuItem("Run Configrations");
-	mntmRunConfigrations.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent arg0) {
-			new RunConfigWindow();
-		}
-	});
-	mnRun.add(mntmRunConfigrations);
-	
-	JMenu mnHelp = new JMenu("Help");
-	menuBar.add(mnHelp);
-	
-	JMenuItem mntmAbout = new JMenuItem("About");
-	mntmAbout.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			try {
-				Runtime.getRuntime().exec("launcher.exe About.html");
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+public class Window extends JFrame {
+	public MainView main_view = new MainView();
+
+	public Window() {
+		this.setIconImage(new ImageIcon("icons/icon.png").getImage());
+		this.setTitle("Glipse IDE - [" + new File(launcher.dirPath).getName() + "]");
+		this.setVisible(true);
+		this.setSize(800, 600);
+		this.setLocationRelativeTo(null);
+		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		JMenuBar menuBar = new JMenuBar();
+		menuBar.setBackground(new Color(235, 235, 240));
+		setJMenuBar(menuBar);
+
+		JMenu file_menu = new JMenu("File");
+		menuBar.add(file_menu);
+
+		JMenuItem mntmNewProject = new JMenuItem("New Project");
+		mntmNewProject.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new newProjectWindow();
 			}
-		}
-	});
-	mnHelp.add(mntmAbout);
-	this.setContentPane(main_view);
-	repaint();
-	setSize(800,601);
-	Main.sc.frame.setVisible(false);
- }
+		});
+		file_menu.add(mntmNewProject);
+
+		JMenuItem mntmOpenProject = new JMenuItem("Open Project");
+		mntmOpenProject.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String path = new FC().chooseFolder();
+				if (path != "")
+					Core.openProject(path);
+			}
+		});
+		file_menu.add(mntmOpenProject);
+
+		JMenuItem mntmNewClass = new JMenuItem("New Class");
+		mntmNewClass.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new newClassWindow();
+			}
+		});
+		file_menu.add(mntmNewClass);
+
+		JMenuItem mntmExportJar = new JMenuItem("Export Jar");
+		mntmExportJar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				new ExportWindow();
+			}
+		});
+		file_menu.add(mntmExportJar);
+
+		JMenu mnRun = new JMenu("Project");
+		menuBar.add(mnRun);
+
+		JMenuItem mntmRunConfigrations = new JMenuItem("Run Configrations");
+		mntmRunConfigrations.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				new RunConfigWindow();
+			}
+		});
+		mnRun.add(mntmRunConfigrations);
+
+		JMenu mnHelp = new JMenu("Help");
+		menuBar.add(mnHelp);
+
+		JMenuItem mntmAbout = new JMenuItem("About");
+		mntmAbout.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					Runtime.getRuntime().exec("launcher.exe About.html");
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		mnHelp.add(mntmAbout);
+		this.setContentPane(main_view);
+		repaint();
+		setSize(800, 601);
+		Main.sc.frame.setVisible(false);
+	}
 }

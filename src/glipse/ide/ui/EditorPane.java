@@ -1,182 +1,230 @@
 package glipse.ide.ui;
 
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-
-import glipse.ide.launcher;
 import glipse.ide.internal.Core;
 import glipse.ide.internal.FileManager;
+import glipse.ide.launcher;
 import glipse.ide.util.StringUtil;
 
-import java.awt.Font;
-import javax.swing.JToolBar;
-import javax.swing.KeyStroke;
-import javax.swing.JButton;
-import javax.swing.JOptionPane;
-
+import javax.swing.*;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
+import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
-import java.awt.event.ActionEvent;
 
 public class EditorPane {
- public JScrollPane Tab;
- public JTextArea pane;
- public String fileName = "";
- public String texts[] = new String[10000];
- int index = 0;
- public EditorPane(String fn) {
-	this.fileName = fn;
-	pane = new JTextArea(FileManager.read(fileName));
-	texts[0]=pane.getText();
-	index++;
-	pane.setFont(new FontStyle().getFont("fonts/UbuntuMono-Bold.ttf",18f));
-	Tab  = new JScrollPane(pane);
-	Tab.setBorder(null);
-	pane.setBorder(null);
-	
-	pane.addKeyListener(new KeyListener() {
+    public JScrollPane Tab;
+    public JTextPane pane;
+    public String fileName = "";
+    public String[] texts = new String[10000];
+    public StyledDocument doc;
+    public Style style1;
+    public Style style2;
+    int index = 0;
 
-		@Override
-		public void keyPressed(KeyEvent e) {
-			// TODO Auto-generated method stub
-			if(e.getKeyCode() == KeyEvent.VK_Z&&(e.getModifiers() & KeyEvent.CTRL_MASK) != 0){
-		    undo();
-		    undo();
-	         }
-	if(e.getKeyCode() == KeyEvent.VK_Y&&(e.getModifiers() & KeyEvent.CTRL_MASK) != 0){
-	    redo();
-	    undo();
-         }
-		}
+    public EditorPane(String fn) {
+        this.fileName = fn;
+        pane = new JTextPane();
+        pane.setText(FileManager.read(fileName));
+        doc = pane.getStyledDocument();
+        style1 = pane.addStyle("", null);
+        StyleConstants.setForeground(style1, Color.blue);
+        StyleConstants.setBackground(style1, Color.white);
+        style2 = pane.addStyle("", null);
+        StyleConstants.setForeground(style2, Color.black);
+        StyleConstants.setBackground(style2, Color.white);
+        texts[0] = pane.getText();
+        index++;
+        pane.setFont(new Font("Consolas", Font.PLAIN, 16));
+        Tab = new JScrollPane(pane);
+        Tab.setBorder(null);
+        pane.setBorder(null);
 
-		@Override
-		public void keyReleased(KeyEvent e) {
-			// TODO Auto-generated method stub
-			
-		}
+        pane.addKeyListener(new KeyListener() {
 
-		@Override
-		public void keyTyped(KeyEvent e) {
-			// TODO Auto-generated method stub
-			
-		}});
-	JToolBar toolBar = new JToolBar();
-	toolBar.setFloatable(false);
-	Tab.setColumnHeaderView(toolBar);
-	
-	JButton run_btn = new JButton("Run");
-	run_btn.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent arg0) {
-			Core.run(fileName);
-		}
-	});
-	toolBar.add(run_btn);
-	
-	JButton compile_btn = new JButton("Compile");
-	compile_btn.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent arg0) {
-			Core.compile(fileName);
-		}
-	});
-	toolBar.add(compile_btn);
-	pane.addKeyListener(new KeyListener() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                // TODO Auto-generated method stub
+                if (e.getKeyCode() == KeyEvent.VK_Z && (e.getModifiers() & KeyEvent.CTRL_MASK) != 0) {
+                    undo();
+                    undo();
+                }
+                if (e.getKeyCode() == KeyEvent.VK_Y && (e.getModifiers() & KeyEvent.CTRL_MASK) != 0) {
+                    redo();
+                    undo();
+                }
+            }
 
-		@Override
-		public void keyPressed(KeyEvent arg0) {
-			
-		}
+            @Override
+            public void keyReleased(KeyEvent e) {
+                // TODO Auto-generated method stub
+                update();
+            }
 
-		@Override
-		public void keyReleased(KeyEvent arg0) {
-		
-		}
+            @Override
+            public void keyTyped(KeyEvent e) {
+                // TODO Auto-generated method stub
 
-		@Override
-		public void keyTyped(KeyEvent arg0) {
-			texts[index]=pane.getText();
-			index++;
-			
-		}});
-	JButton undo_btn = new JButton("Undo");
-	undo_btn.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent arg0) {
-			undo();
-			undo();
-		}
-	});
-	toolBar.add(undo_btn);
-	
-	JButton redo_btn = new JButton("Redo");
-	redo_btn.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			redo();
-			redo();
-		}
-	});
-	toolBar.add(redo_btn);
-	
-	JButton del_btn = new JButton("Delete");
-	del_btn.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent arg0) {
-			 int result = JOptionPane.showConfirmDialog(launcher.win,"Are you sure you want to delete this Class?", "Delete",
-		               JOptionPane.YES_NO_OPTION,
-		               JOptionPane.QUESTION_MESSAGE);
-		            if(result == JOptionPane.YES_OPTION){
-		               new File(fileName).delete();
-		               if(StringUtil.exists(FileManager.read(launcher.dirPath+"/proj"),";"+fileName))
-		               FileManager.write(launcher.dirPath+"/proj",FileManager.read(launcher.dirPath+"/proj").replace(";"+fileName+"\n", ""));
-		               else 
-		            	   FileManager.write(launcher.dirPath+"/proj",FileManager.read(launcher.dirPath+"/proj").replace(fileName+"\n", ""));
-		               MainView.tabbedPane.remove(getTab());
-		            }
-		}
-	});
-	toolBar.add(del_btn);
-	new Thread(new Runnable() {
+            }
+        });
+        JToolBar toolBar = new JToolBar();
+        toolBar.setFloatable(false);
+        Tab.setColumnHeaderView(toolBar);
 
-		@Override
-		public void run() {
-			for(;;) {
-				try {
-					Thread.sleep(2500);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			save();
-			String art = FileManager.read(fileName).replace("  ", " ");
-			for(int i = 0;i<5;i++)
-				art = art.replace("  ", " ");
-		     if(StringUtil.exists(art,"public static void main")) {
-		    	 run_btn.setEnabled(true);
-		     }
-		     else run_btn.setEnabled(false);
-			}
-			
-		}}).start();
+        JButton run_btn = new JButton("Run");
+        run_btn.setIcon(new ImageIcon("icons\\icons\\1x\\run.png"));
+        run_btn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                Core.run(fileName);
+            }
+        });
+        toolBar.add(run_btn);
 
- }
- public JScrollPane getTab() {
-	 return Tab;
- }
- 
- public void save() {
-	 FileManager.write(fileName,pane.getText());
- }
- public void undo() {
-	 if(index>0) {
-	pane.setText(texts[index-1]);
-	index--;
-	 }
- }
- public void redo() {
-	 if (texts[index]!=null) {
-			pane.setText(texts[index]);
-			index++;
-	 }
- }
+        JButton compile_btn = new JButton("Compile");
+        compile_btn.setIcon(new ImageIcon("icons\\icons\\1x\\compile.png"));
+        compile_btn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                Core.compile(fileName);
+            }
+        });
+        toolBar.add(compile_btn);
+        pane.addKeyListener(new KeyListener() {
+
+            @Override
+            public void keyPressed(KeyEvent arg0) {
+
+            }
+
+            @Override
+            public void keyReleased(KeyEvent arg0) {
+
+            }
+
+            @Override
+            public void keyTyped(KeyEvent arg0) {
+                texts[index] = pane.getText();
+                index++;
+
+            }
+        });
+        JButton undo_btn = new JButton("Undo");
+        undo_btn.setIcon(new ImageIcon("icons\\icons\\1x\\undo.png"));
+        undo_btn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                undo();
+                undo();
+            }
+        });
+        toolBar.add(undo_btn);
+
+        JButton redo_btn = new JButton("Redo");
+        redo_btn.setIcon(new ImageIcon("icons\\icons\\1x\\redo.png"));
+        redo_btn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                redo();
+                redo();
+            }
+        });
+        toolBar.add(redo_btn);
+
+        JButton del_btn = new JButton("Delete");
+        del_btn.setIcon(new ImageIcon("icons\\icons\\1x\\delete.png"));
+        del_btn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                int result = JOptionPane.showConfirmDialog(launcher.win, "Are you sure you want to delete this Class?",
+                        "Delete", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                if (result == JOptionPane.YES_OPTION) {
+                    new File(fileName).delete();
+                    if (StringUtil.exists(FileManager.read(launcher.dirPath + "/proj"), ";" + fileName))
+                        FileManager.write(launcher.dirPath + "/proj",
+                                FileManager.read(launcher.dirPath + "/proj").replace(";" + fileName + "\n", ""));
+                    else
+                        FileManager.write(launcher.dirPath + "/proj",
+                                FileManager.read(launcher.dirPath + "/proj").replace(fileName + "\n", ""));
+                    MainView.tabbedPane.remove(getTab());
+                }
+            }
+        });
+        toolBar.add(del_btn);
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                for (; ; ) {
+                    try {
+                        Thread.sleep(2500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    save();
+                    String art = FileManager.read(fileName).replace("  ", " ");
+                    for (int i = 0; i < 5; i++)
+                        art = art.replace("  ", " ");
+                    run_btn.setEnabled(StringUtil.exists(art, "public static void main"));
+                }
+
+            }
+        }).start();
+
+    }
+
+    public JScrollPane getTab() {
+        return Tab;
+    }
+
+    public void save() {
+        FileManager.write(fileName, pane.getText());
+    }
+
+    public void undo() {
+        if (index > 0) {
+            pane.setText(texts[index - 1]);
+            index--;
+        }
+    }
+
+    public void redo() {
+        if (texts[index] != null) {
+            pane.setText(texts[index]);
+            index++;
+        }
+    }
+
+    public void update() {
+        System.out.println("ab");
+        String t = pane.getText();
+        int cp = pane.getCaretPosition();
+        int start = 0;
+        for (int i = 0; i < t.length(); i++) {
+            try {
+                if (t.charAt(i) == ' ' || t.charAt(i) == '\t') {
+
+                    start = i + 1;
+
+                } else if (i==t.length()-2||t.charAt(i + 1) == ' ' || t.charAt(i + 1) == '\t') {
+                    doc.remove(start, i + 1 - start);
+                    if (t.substring(start, i + 1).equals("public")||t.substring(start, i + 1).equals("void")||t.substring(start, i + 1).equals("class")||
+                            t.substring(start, i + 1).equals("private")||t.substring(start, i + 1).equals("protected")||t.substring(start, i + 1).equals("static")) {
+                        try {
+                            doc.insertString(start, t.substring(start, i + 1), style1);
+                        } catch (BadLocationException e) {
+                        }
+                    }
+                    else{
+                        try {
+                            doc.insertString(start, t.substring(start, i + 1), style2);
+                        } catch (BadLocationException e) {
+                        }
+                    }
+                }
+            } catch (Exception e) {
+            }
+        }
+        pane.setCaretPosition(cp);
+    }
 }

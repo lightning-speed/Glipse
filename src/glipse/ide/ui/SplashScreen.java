@@ -20,7 +20,7 @@ public static JFrame frame = new JFrame("Glipse");
 	 frame.setSize(434,300);
 	 frame.setSize(434,301);
 	try {
-		Thread.sleep(3000);
+		Thread.sleep(0);
 	} catch (InterruptedException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
